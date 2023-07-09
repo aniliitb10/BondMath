@@ -4,8 +4,8 @@ import math
 
 from pydantic import BaseModel
 
-import util
-from enums import QuotationBasis, DayCountConvention
+import chapter1.util as util
+from chapter1.enums import QuotationBasis, DayCountConvention
 
 
 class InterestRate(BaseModel):
@@ -27,9 +27,15 @@ class InterestRate(BaseModel):
         if self.periodicity == periodicity:
             return self
 
-        rate = self.change_periodicity(self.rate, self.periodicity, periodicity)
+        rate = self.change_periodicity(rate=self.rate, old=self.periodicity, new=periodicity)
         return InterestRate.create(rate=rate, periodicity=periodicity, quotation_basis=self.quotation_basis,
                                    day_count_convention=self.day_count_convention)
+
+    def __eq__(self, other: InterestRate):
+        if self.__class__ is other.__class__:
+            return self.model_dump() == other.model_dump()
+
+        return TypeError(f'Unexpected type [{type(other)}] of [{other}]')
 
     @staticmethod
     def create(*, rate: float, periodicity=2, quotation_basis=QuotationBasis.AddOnRate,
@@ -42,6 +48,9 @@ class InterestRate(BaseModel):
         return (days_in_year * dr) / (days_in_year - (days * dr))
 
     @staticmethod
-    def change_periodicity(rate: float, from_periodicity: int, to_periodicity: int) -> float:
-        return (math.pow(math.pow((1 + rate / from_periodicity), from_periodicity),
-                         1 / to_periodicity) - 1) * to_periodicity
+    def change_periodicity(*, rate: float, old: int, new: int) -> float:
+        return (math.pow(math.pow((1 + rate / old), old), 1 / new) - 1) * new
+
+    @staticmethod
+    def dr_to_bey(*, dr: float, days: int, days_in_year: int) -> float:
+        return (365 * dr) / (days_in_year - (days * dr))
