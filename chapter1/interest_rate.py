@@ -52,5 +52,5 @@ class InterestRate(BaseModel):
         return (math.pow(math.pow((1 + rate / old), old), 1 / new) - 1) * new
 
     @staticmethod
-    def dr_to_bey(*, dr: float, days: int, days_in_year: int) -> float:
-        return (365 * dr) / (days_in_year - (days * dr))
+    def dr_to_bey(*, dr: float, days: int, dr_days_in_year: int) -> float:
+        return (365 * dr) / (dr_days_in_year - (days * dr))
