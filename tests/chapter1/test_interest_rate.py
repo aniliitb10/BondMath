@@ -1,6 +1,6 @@
 from unittest import TestCase
 from chapter1.interest_rate import InterestRate
-from chapter1.enums import QuotationBasis, DayCountConvention
+from enums import QuotationBasis, DayCountConvention
 
 
 class TestInterestRate(TestCase):
@@ -10,8 +10,8 @@ class TestInterestRate(TestCase):
         self.pr = 5  # decimal precision
 
     def test_to_aor(self):
-        dr = InterestRate.create(rate=0.0380, periodicity=2, quotation_basis=QuotationBasis.DiscountRate,
-                                 day_count_convention=DayCountConvention.Actual360)
+        dr = InterestRate.instance(rate=0.0380, periodicity=2, quotation_basis=QuotationBasis.DiscountRate,
+                                   day_count_convention=DayCountConvention.Actual360)
         aor = dr.to_aor()
         self.assertAlmostEqual(0.03874, aor.rate, places=self.pr)
 
@@ -23,8 +23,8 @@ class TestInterestRate(TestCase):
         self.assertEqual(dr.day_count_convention, aor.day_count_convention)
 
     def test_to_periodicity(self):
-        old_rate = InterestRate.create(rate=0.0525, periodicity=12, quotation_basis=QuotationBasis.AddOnRate,
-                                       day_count_convention=DayCountConvention.Actual360)
+        old_rate = InterestRate.instance(rate=0.0525, periodicity=12, quotation_basis=QuotationBasis.AddOnRate,
+                                         day_count_convention=DayCountConvention.Actual360)
         new_rate = old_rate.to_periodicity(4)
         self.assertAlmostEqual(0.055273, new_rate, places=self.pr)
         self.assertEqual(old_rate.periodicity, 12)

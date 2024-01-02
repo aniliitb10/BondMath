@@ -1,4 +1,7 @@
-pydantic
+pydantic~=2.0.2
 notebook
 pandas
 matplotlib
+pydantic
+numpy_financial
+numpy~=1.26.0

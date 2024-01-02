@@ -1,4 +1,4 @@
-import chapter1.util as util
+import util as util
 from chapter1.interest_rate import InterestRate
 
 
